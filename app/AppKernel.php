@@ -47,4 +47,17 @@ class AppKernel extends Kernel
     {
         $loader->load($this->getRootDir().'/config/config_'.$this->getEnvironment().'.yml');
     }
+
+    //FIX FatalThrowableError in ErrorHandler.php line 364: //
+    public function __serialize(): array
+    {
+        // Retourner les données que vous souhaitez sérialiser
+        return [];
+    }
+
+    public function __unserialize(array $data): void
+    {
+        // Traiter les données sérialisées si nécessaire
+    }
+    //FIX FatalThrowableError in ErrorHandler.php line 364: END//
 }
