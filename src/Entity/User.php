@@ -2,42 +2,41 @@
 
 namespace App\Entity;
 
+use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Table("user")
- * @ORM\Entity
- * @UniqueEntity("email")
- */
-class User implements UserInterface
+#[UniqueEntity('email')]
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[ORM\EntityListeners(['App\EntityListener\UserListener'])]
+
+class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
+    #[ORM\Column(type: "integer")]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    private ?int $id = null;
+
+    #[ORM\Column(type: "string", length: 25, unique: true)]
+    #[Assert\NotBlank(message: "Vous devez saisir un nom d'utilisateur.")]
+    private ?string $username;
+
+    #[ORM\Column(type: "string", length: 60, unique: true)]
+    #[Assert\NotBlank(message: "Vous devez saisir une adresse email.")]
+    #[Assert\Email(message: "Le format de l'adresse n'est pas correcte.")]
+    private ?string $email = null;
 
     /**
-     * @ORM\Column(type="string", length=25, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir un nom d'utilisateur.")
+     * @var string The hashed password
      */
-    private $username;
+    private ?string $plainPassword = null;
 
-    /**
-     * @ORM\Column(type="string", length=64)
-     */
-    private $password;
-
-    /**
-     * @ORM\Column(type="string", length=60, unique=true)
-     * @Assert\NotBlank(message="Vous devez saisir une adresse email.")
-     * @Assert\Email(message="Le format de l'adresse n'est pas correcte.")
-     */
-    private $email;
+    #[ORM\Column(type: "string", length: 64)]
+    #[Assert\NotBlank()]
+    private ?string $password = 'password';
 
     public function getId()
     {
@@ -54,21 +53,6 @@ class User implements UserInterface
         $this->username = $username;
     }
 
-    public function getSalt()
-    {
-        return null;
-    }
-
-    public function getPassword()
-    {
-        return $this->password;
-    }
-
-    public function setPassword($password)
-    {
-        $this->password = $password;
-    }
-
     public function getEmail()
     {
         return $this->email;
@@ -79,12 +63,54 @@ class User implements UserInterface
         $this->email = $email;
     }
 
-    public function getRoles()
+    public function getUserIdentifier(): string
+    {
+        return (string) $this->email;
+    }
+
+    public function getRoles(): array
     {
         return array('ROLE_USER');
     }
 
-    public function eraseCredentials()
+    /**
+     * Get the value of plainPassword
+     */
+    public function getPlainPassword()
     {
+        return $this->plainPassword;
+    }
+
+    /**
+     * Set the value of plainPassword
+     *
+     * @return  self
+     */
+    public function setPlainPassword($plainPassword)
+    {
+        $this->plainPassword = $plainPassword;
+
+        return $this;
+    }
+
+    /**
+     * @see PasswordAuthenticatedUserInterface
+     */
+    public function getPassword(): string
+    {
+        return $this->password;
+    }
+
+    public function setPassword(string $password): static
+    {
+        $this->password = $password;
+
+        return $this;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // If you store any temporary, sensitive data on the user, clear it here
+        // $this->plainPassword = null;
     }
 }

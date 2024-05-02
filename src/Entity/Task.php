@@ -2,47 +2,39 @@
 
 namespace App\Entity;
 
+use App\Repository\TaskRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity
- * @ORM\Table
- */
-class Task
+#[UniqueEntity('title')]
+#[ORM\Entity(repositoryClass: TaskRepository::class)]
+
+ class Task
 {
-    /**
-     * @ORM\Column(type="integer")
-     * @ORM\Id
-     * @ORM\GeneratedValue(strategy="AUTO")
-     */
-    private $id;
 
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
+    #[ORM\Column(type: "integer")]
+    #[ORM\Id]
+    #[ORM\GeneratedValue(strategy: "AUTO")]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(message="Vous devez saisir un titre.")
-     */
-    private $title;
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
 
-    /**
-     * @ORM\Column(type="text")
-     * @Assert\NotBlank(message="Vous devez saisir du contenu.")
-     */
-    private $content;
+    #[ORM\Column(type: "string")]
+    #[Assert\NotBlank(message: "Vous devez saisir un titre.")]
+    private ?string $title;
 
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isDone;
+    #[ORM\Column(type: "text")]
+    #[Assert\NotBlank(message: "Vous devez saisir du contenu.")]
+    private ?string $content = null;
+
+    #[ORM\Column(type: "boolean")]
+    private bool $isDone;
 
     public function __construct()
     {
-        $this->createdAt = new \Datetime();
+        $this->createdAt = new \DateTimeImmutable();
         $this->isDone = false;
     }
 
