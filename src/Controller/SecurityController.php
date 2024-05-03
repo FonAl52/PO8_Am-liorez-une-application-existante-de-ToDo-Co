@@ -10,7 +10,7 @@ use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class SecurityController extends AbstractController
 {
-    #[Route('/login', name: 'security.login', methods: ['POST','GET'])]
+    #[Route('/login', name: 'app_login', methods: ['POST','GET'])]
     public function login(
         Request $request,
         AuthenticationUtils $authenticationUtils
@@ -21,7 +21,7 @@ class SecurityController extends AbstractController
         ]);
     }
 
-    #[Route('/logout', name: 'security.logout', methods: ['POST'])]
+    #[Route('/logout', name: 'app_logout')]
     public function logout()
     {
         // This method is intentionally left blank

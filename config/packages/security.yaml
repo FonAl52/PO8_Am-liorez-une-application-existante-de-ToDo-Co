@@ -17,10 +17,14 @@ security:
             lazy: true
             provider: app_user_provider
             form_login:
-                login_path: security.login
-                check_path: security.login
+                login_path: app_login
+                check_path: app_login
+                enable_csrf: true
             logout:
-                path: security.logout
+                path: app_logout
+                target: homepage
+                # where to redirect after logout
+                # target: app_any_route
 
 
             # activate different ways to authenticate
