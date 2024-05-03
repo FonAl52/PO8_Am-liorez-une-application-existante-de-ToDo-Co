@@ -10,6 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\SecurityBundle\Security;
 
 
 class TaskController extends AbstractController
@@ -28,7 +29,7 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/create', name: 'task_create', methods: ['GET','POST'])]
-    public function createAction(Request $request)
+    public function createAction(Request $request, Security $security)
     {
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
@@ -36,6 +37,10 @@ class TaskController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $security->getUser();
+            
+            $task->setUser($user);
+
             $this->entityManager->persist($task);
             $this->entityManager->flush();
 
@@ -48,13 +53,18 @@ class TaskController extends AbstractController
     }
 
     #[Route('/tasks/{id}/edit', name: 'task_edit', methods: ['GET','POST'])]
-    public function editAction(Task $task, Request $request)
+    public function editAction(Task $task, Request $request, Security $security)
     {
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $user = $security->getUser();
+            
+            $task->setUser($user);
+
+            $this->entityManager->persist($task);
             $this->entityManager->flush();
 
             $this->addFlash('success', 'La tâche a bien été modifiée.');

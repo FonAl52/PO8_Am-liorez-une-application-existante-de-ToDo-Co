@@ -32,6 +32,10 @@ use Symfony\Component\Validator\Constraints as Assert;
     #[ORM\Column(type: "boolean")]
     private bool $isDone;
 
+    #[ORM\ManyToOne(inversedBy: 'task')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -76,6 +80,18 @@ use Symfony\Component\Validator\Constraints as Assert;
     public function isDone()
     {
         return $this->isDone;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
+
+        return $this;
     }
 
     public function toggle($flag)
