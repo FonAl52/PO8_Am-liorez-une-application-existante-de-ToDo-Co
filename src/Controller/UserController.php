@@ -9,17 +9,26 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 class UserController extends AbstractController
 {
-    #[Route('/users', name: 'user_list', methods: ['GET','POST'])]
+    #[Route('/users', name: 'user_list', methods: ['GET', 'POST'])]
     public function listAction(
-        UserRepository $user
-        ): Response {
-            return $this->render('user/list.html.twig', ['users' => $user->findAll()]);
+        UserRepository $userRepository,
+        AuthorizationCheckerInterface $authorizationChecker
+    ): Response {
+        if (!$authorizationChecker->isGranted('ROLE_ADMIN')) {
+            // Si l'utilisateur n'a pas le rôle admin, on affiche un message d'erreur
+            $this->addFlash('erreur', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
+            return $this->redirectToRoute('homepage'); // Rediriger vers l'accueil
+        }
+
+        // Si l'utilisateur a le rôle admin, afficher la liste des utilisateurs
+        return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
     
     #[Route('/users/create', name: 'user_create', methods: ['GET','POST'])]
@@ -42,7 +51,7 @@ class UserController extends AbstractController
 
             $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
-            return $this->redirectToRoute('user_list');
+            return $this->redirectToRoute('homepage');
             } catch (UniqueConstraintViolationException $e) {
                 $this->addFlash('error', 'Ce nom d\'utilisateur existe déjà.');
                 
@@ -58,8 +67,14 @@ class UserController extends AbstractController
         User $user, 
         Request $request, 
         EntityManagerInterface $em,  
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        AuthorizationCheckerInterface $authChecker
     ): Response {
+        if (!$authChecker->isGranted('ROLE_ADMIN')) {
+            // Si l'utilisateur n'est pas administrateur, rediriger vers la page d'accueil avec un message d'erreur
+            $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
+            return $this->redirectToRoute('homepage');
+        }
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
