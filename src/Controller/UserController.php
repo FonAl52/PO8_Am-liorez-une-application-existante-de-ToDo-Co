@@ -23,7 +23,7 @@ class UserController extends AbstractController
     ): Response {
         if (!$authorizationChecker->isGranted('ROLE_ADMIN')) {
             // Si l'utilisateur n'a pas le rôle admin, on affiche un message d'erreur
-            $this->addFlash('erreur', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
+            $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
             return $this->redirectToRoute('homepage'); // Rediriger vers l'accueil
         }
 
@@ -35,7 +35,14 @@ class UserController extends AbstractController
     public function createAction(
         Request $request, 
         EntityManagerInterface $em,
+        AuthorizationCheckerInterface $authorizationChecker
     ): Response {
+        if (!$authorizationChecker->isGranted('ROLE_ADMIN')) {
+            // Si l'utilisateur n'a pas le rôle admin, on affiche un message d'erreur
+            $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
+            return $this->redirectToRoute('homepage'); // Rediriger vers l'accueil
+        }
+
         $user = new User();
 
         $form = $this->createForm(UserType::class, $user);
