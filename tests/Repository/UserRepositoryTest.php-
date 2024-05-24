@@ -1,0 +1,56 @@
+<?php
+
+namespace App\Tests\Repository;
+
+use App\Entity\User;
+use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\ObjectRepository;
+use PHPUnit\Framework\TestCase;
+
+class UserRepositoryTest extends TestCase
+{
+    private UserRepository $userRepository;
+    private ObjectRepository $objectRepository;
+
+    protected function setUp(): void
+    {
+        // Créer un double de ObjectRepository
+        $this->objectRepository = $this->createMock(ObjectRepository::class);
+
+        // Créer un double de l'EntityManagerInterface
+        $entityManager = $this->createMock(EntityManagerInterface::class);
+
+        // Configurer le double de l'EntityManagerInterface pour retourner le double de ObjectRepository
+        $entityManager->method('getRepository')
+            ->willReturn($this->objectRepository);
+
+        // Créer le UserRepository avec le double de l'EntityManagerInterface
+        $this->userRepository = new UserRepository($entityManager);
+    }
+
+    public function testConstruct()
+    {
+    
+    }
+
+    public function testFindById(): void
+    {
+        // Créer un double d'un utilisateur (mock)
+        $user = $this->createMock(User::class);
+        $userId = 1;
+
+        // Configurer le double de ObjectRepository pour retourner l'utilisateur lorsque find() est appelé avec l'ID spécifié
+        $this->objectRepository->expects($this->once())
+            ->method('find')
+            ->with($userId)
+            ->willReturn($user);
+
+        // Exécuter le test
+        $foundUser = $this->userRepository->find($userId);
+
+        // Vérifier que l'utilisateur trouvé correspond à celui retourné par le double
+        $this->assertSame($user, $foundUser);
+    }
+}
+
