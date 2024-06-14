@@ -108,17 +108,25 @@ class TaskController extends AbstractController
             
                 return $this->redirectToRoute('task_list');
             } else {
-                $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour supprimer cette tâche.');
-                return $this->redirectToRoute('task_list');
-            }
-        } else {
-            // Si l'utilisateur n'est pas ADMIN, il ne peut supprimer que les tâches qu'il a créées lui-même
-            if ($taskCreator !== $currentUser) {
-                $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour supprimer cette tâche.');
-                return $this->redirectToRoute('task_list');
+                if ($taskCreator !== $currentUser) {
+                    $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour supprimer cette tâche.');
+                    return $this->redirectToRoute('task_list');
+                } else {
+                    // Si l'utilisateur a les permissions nécessaires, supprimer la tâche
+                    $this->entityManager->remove($task);
+                    $this->entityManager->flush();
+
+                    $this->addFlash('success', 'La tâche a bien été supprimée.');
+
+                    return $this->redirectToRoute('task_list');
+                }
+
             }
         }
-        
+        if ($taskCreator !== $currentUser) {
+            $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour supprimer cette tâche.');
+            return $this->redirectToRoute('task_list');
+        }
         // Si l'utilisateur a les permissions nécessaires, supprimer la tâche
         $this->entityManager->remove($task);
         $this->entityManager->flush();

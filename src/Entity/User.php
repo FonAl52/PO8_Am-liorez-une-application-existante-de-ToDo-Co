@@ -2,9 +2,11 @@
 
 namespace App\Entity;
 
+use App\Entity\Task;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -13,7 +15,6 @@ use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 #[UniqueEntity('email')]
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[ORM\EntityListeners(['App\EntityListener\UserListener'])]
-
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Column(type: "integer")]
@@ -30,54 +31,64 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email(message: "Le format de l'adresse n'est pas correcte.")]
     private ?string $email = null;
 
-    /**
-     * @var string The hashed password
-     */
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $createdAt = null;
+
     private ?string $plainPassword = null;
 
     #[ORM\Column(type: "string", length: 64)]
     #[Assert\NotBlank()]
     private ?string $password = 'password';
 
-    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class, orphanRemoval: true)]
+    #[ORM\OneToMany(mappedBy: 'user', targetEntity: Task::class, cascade: ['persist', 'remove'])]
     private Collection $task;
 
     #[ORM\Column]
     #[Assert\NotBlank()]
     private array $roles = [];
 
-    /**
-     * User constructor.
-     */
     public function __construct()
     {
         $this->roles = ['ROLE_USER'];
+        $this->task = new ArrayCollection();
     }
 
-
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getUsername()
+    public function getUsername(): ?string
     {
         return $this->username;
     }
 
-    public function setUsername($username)
+    public function setUsername(?string $username): self
     {
         $this->username = $username;
+        return $this;
     }
 
-    public function getEmail()
+    public function getEmail(): ?string
     {
         return $this->email;
     }
 
-    public function setEmail($email)
+    public function setEmail(?string $email): self
     {
         $this->email = $email;
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    {
+        $this->createdAt = $createdAt;
+        return $this;
     }
 
     public function getUserIdentifier(): string
@@ -85,100 +96,69 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return (string) $this->email;
     }
 
-
-    /**
-     * Get the value of plainPassword
-     */
-    public function getPlainPassword()
+    public function getPlainPassword(): ?string
     {
         return $this->plainPassword;
     }
 
-    /**
-     * Set the value of plainPassword
-     *
-     * @return  self
-     */
-    public function setPlainPassword($plainPassword)
+    public function setPlainPassword(?string $plainPassword): self
     {
         $this->plainPassword = $plainPassword;
-
         return $this;
     }
 
-    /**
-     * @see PasswordAuthenticatedUserInterface
-     */
     public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): static
+    public function setPassword(string $password): self
     {
         $this->password = $password;
-
         return $this;
     }
 
-    /**
-     * @return Collection<int, task>
-     */
     public function getTask(): Collection
     {
         return $this->task;
     }
 
-    public function addTask(task $task): static
+    public function addTask(Task $task): self
     {
         if (!$this->task->contains($task)) {
             $this->task->add($task);
             $task->setUser($this);
         }
-
         return $this;
     }
 
-    public function removeTask(task $task): static
+    public function removeTask(Task $task): self
     {
         if ($this->task->removeElement($task)) {
-            // set the owning side to null (unless already changed)
             if ($task->getUser() === $this) {
                 $task->setUser(null);
             }
         }
-
         return $this;
     }
 
-    /**
-     * @see UserInterface
-     */
     public function getRoles(): array
     {
         $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
-
         return array_unique($roles);
     }
 
-    /**
-     * Set user roles
-     *
-     * @param array $roles
-     * @return static
-     */
-    public function setRoles(array $roles): static
+    public function setRoles(array $roles): self
     {
         $this->roles = $roles;
-
         return $this;
     }
 
     public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
+        // Efface les données temporaires sensibles si nécessaire
+        $this->plainPassword = null;
     }
 }
+
