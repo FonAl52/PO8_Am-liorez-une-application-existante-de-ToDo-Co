@@ -2,12 +2,12 @@
 <html lang="en">
  <head>
   <meta charset="UTF-8">
-  <title>Dashboard for /Applications/MAMP/htdocs/PO8_Am-liorez-une-application-existante-de-ToDo-Co/src/Controller</title>
+  <title>Dashboard for /Applications/MAMP/htdocs/PO8_Am-liorez-une-application-existante-de-ToDo-Co/src/DataFixtures/Dev</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="../_css/bootstrap.min.css?v=9.2.31" rel="stylesheet" type="text/css">
-  <link href="../_css/nv.d3.min.css?v=9.2.31" rel="stylesheet" type="text/css">
-  <link href="../_css/style.css?v=9.2.31" rel="stylesheet" type="text/css">
-  <link href="../_css/custom.css" rel="stylesheet" type="text/css">
+  <link href="../../_css/bootstrap.min.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="../../_css/nv.d3.min.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="../../_css/style.css?v=9.2.31" rel="stylesheet" type="text/css">
+  <link href="../../_css/custom.css" rel="stylesheet" type="text/css">
  </head>
  <body>
   <header>
@@ -16,8 +16,9 @@
      <div class="col-md-12">
       <nav aria-label="breadcrumb">
        <ol class="breadcrumb">
-         <li class="breadcrumb-item"><a href="../index.html">/Applications/MAMP/htdocs/PO8_Am-liorez-une-application-existante-de-ToDo-Co/src</a></li>
-         <li class="breadcrumb-item"><a href="index.html">Controller</a></li>
+         <li class="breadcrumb-item"><a href="../../index.html">/Applications/MAMP/htdocs/PO8_Am-liorez-une-application-existante-de-ToDo-Co/src</a></li>
+         <li class="breadcrumb-item"><a href="../index.html">DataFixtures</a></li>
+         <li class="breadcrumb-item"><a href="index.html">Dev</a></li>
          <li class="breadcrumb-item active">(Dashboard)</li>
 
        </ol>
@@ -58,8 +59,6 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="UserController.php.html#17">App\Controller\UserController</a></td><td class="text-right">82%</td></tr>
-       <tr><td><a href="TaskController.php.html#18">App\Controller\TaskController</a></td><td class="text-right">86%</td></tr>
 
        </tbody>
       </table>
@@ -76,8 +75,6 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="TaskController.php.html#18">App\Controller\TaskController</a></td><td class="text-right">14</td></tr>
-       <tr><td><a href="UserController.php.html#17">App\Controller\UserController</a></td><td class="text-right">12</td></tr>
 
        </tbody>
       </table>
@@ -115,9 +112,6 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="TaskController.php.html#94"><abbr title="App\Controller\TaskController::deleteTaskAction">deleteTaskAction</abbr></a></td><td class="text-right">69%</td></tr>
-       <tr><td><a href="UserController.php.html#72"><abbr title="App\Controller\UserController::editAction">editAction</abbr></a></td><td class="text-right">80%</td></tr>
-       <tr><td><a href="UserController.php.html#34"><abbr title="App\Controller\UserController::createAction">createAction</abbr></a></td><td class="text-right">81%</td></tr>
 
        </tbody>
       </table>
@@ -134,9 +128,6 @@
         </tr>
        </thead>
        <tbody>
-       <tr><td><a href="TaskController.php.html#94"><abbr title="App\Controller\TaskController::deleteTaskAction">deleteTaskAction</abbr></a></td><td class="text-right">5</td></tr>
-       <tr><td><a href="UserController.php.html#72"><abbr title="App\Controller\UserController::editAction">editAction</abbr></a></td><td class="text-right">5</td></tr>
-       <tr><td><a href="UserController.php.html#34"><abbr title="App\Controller\UserController::createAction">createAction</abbr></a></td><td class="text-right">5</td></tr>
 
        </tbody>
       </table>
@@ -150,9 +141,9 @@
     </p>
    </footer>
   </div>
-  <script src="../_js/jquery.min.js?v=9.2.31" type="text/javascript"></script>
-  <script src="../_js/d3.min.js?v=9.2.31" type="text/javascript"></script>
-  <script src="../_js/nv.d3.min.js?v=9.2.31" type="text/javascript"></script>
+  <script src="../../_js/jquery.min.js?v=9.2.31" type="text/javascript"></script>
+  <script src="../../_js/d3.min.js?v=9.2.31" type="text/javascript"></script>
+  <script src="../../_js/nv.d3.min.js?v=9.2.31" type="text/javascript"></script>
   <script type="text/javascript">
 $(document).ready(function() {
   nv.addGraph(function() {
@@ -165,7 +156,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#classCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,2,0,2], "Class Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,1], "Class Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -183,7 +174,7 @@ $(document).ready(function() {
       .yAxis.tickFormat(d3.format('d'));
 
     d3.select('#methodCoverageDistribution svg')
-      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,1,0,2,0,9], "Method Coverage"))
+      .datum(getCoverageDistributionData([0,0,0,0,0,0,0,0,0,0,0,3], "Method Coverage"))
       .transition().duration(500).call(chart);
 
     nv.utils.windowResize(chart.update);
@@ -233,7 +224,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Cyclomatic Complexity');
 
     d3.select('#classComplexity svg')
-      .datum(getComplexityData([[100,1,"<a href=\"DefaultController.php.html#10\">App\\Controller\\DefaultController<\/a>"],[100,2,"<a href=\"SecurityController.php.html#11\">App\\Controller\\SecurityController<\/a>"],[86.79245283018868,14,"<a href=\"TaskController.php.html#18\">App\\Controller\\TaskController<\/a>"],[82.85714285714286,12,"<a href=\"UserController.php.html#17\">App\\Controller\\UserController<\/a>"]], 'Class Complexity'))
+      .datum(getComplexityData([[100,3,"<a href=\"AppFixtures.php.html#15\">App\\DataFixtures\\Dev\\AppFixtures<\/a>"]], 'Class Complexity'))
       .transition()
       .duration(500)
       .call(chart);
@@ -257,7 +248,7 @@ $(document).ready(function() {
     chart.yAxis.axisLabel('Method Complexity');
 
     d3.select('#methodComplexity svg')
-      .datum(getComplexityData([[100,1,"<a href=\"DefaultController.php.html#12\">App\\Controller\\DefaultController::index<\/a>"],[100,1,"<a href=\"SecurityController.php.html#13\">App\\Controller\\SecurityController::login<\/a>"],[100,1,"<a href=\"SecurityController.php.html#31\">App\\Controller\\SecurityController::logout<\/a>"],[100,1,"<a href=\"TaskController.php.html#22\">App\\Controller\\TaskController::__construct<\/a>"],[100,1,"<a href=\"TaskController.php.html#27\">App\\Controller\\TaskController::listAction<\/a>"],[100,3,"<a href=\"TaskController.php.html#33\">App\\Controller\\TaskController::createAction<\/a>"],[100,3,"<a href=\"TaskController.php.html#57\">App\\Controller\\TaskController::editAction<\/a>"],[100,1,"<a href=\"TaskController.php.html#83\">App\\Controller\\TaskController::toggleTaskAction<\/a>"],[69.56521739130434,5,"<a href=\"TaskController.php.html#94\">App\\Controller\\TaskController::deleteTaskAction<\/a>"],[100,2,"<a href=\"UserController.php.html#19\">App\\Controller\\UserController::listAction<\/a>"],[81.25,5,"<a href=\"UserController.php.html#34\">App\\Controller\\UserController::createAction<\/a>"],[80,5,"<a href=\"UserController.php.html#72\">App\\Controller\\UserController::editAction<\/a>"]], 'Method Complexity'))
+      .datum(getComplexityData([[100,1,"<a href=\"AppFixtures.php.html#19\">App\\DataFixtures\\Dev\\AppFixtures::__construct<\/a>"],[100,1,"<a href=\"AppFixtures.php.html#24\">App\\DataFixtures\\Dev\\AppFixtures::getGroups<\/a>"],[100,1,"<a href=\"AppFixtures.php.html#29\">App\\DataFixtures\\Dev\\AppFixtures::load<\/a>"]], 'Method Complexity'))
       .transition()
       .duration(500)
       .call(chart);

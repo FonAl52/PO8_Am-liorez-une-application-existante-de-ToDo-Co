@@ -9,13 +9,11 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[UniqueEntity('title')]
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
-
- class Task
+class Task
 {
-
-    #[ORM\Column(type: "integer")]
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: "AUTO")]
+    #[ORM\Column(type: "integer")]
     private ?int $id = null;
 
     #[ORM\Column]
@@ -23,17 +21,17 @@ use Symfony\Component\Validator\Constraints as Assert;
 
     #[ORM\Column(type: "string")]
     #[Assert\NotBlank(message: "Vous devez saisir un titre.")]
-    private ?string $title;
+    private ?string $title = null;
 
     #[ORM\Column(type: "text")]
     #[Assert\NotBlank(message: "Vous devez saisir du contenu.")]
     private ?string $content = null;
 
     #[ORM\Column(type: "boolean")]
-    private bool $isDone;
+    private bool $isDone = false;
 
     #[ORM\ManyToOne(inversedBy: 'task')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: false, onDelete: 'CASCADE')]
     private ?User $user = null;
 
     public function __construct()
@@ -42,43 +40,45 @@ use Symfony\Component\Validator\Constraints as Assert;
         $this->isDone = false;
     }
 
-    public function getId()
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
         return $this->createdAt;
     }
 
-    public function setCreatedAt(?\DateTimeInterface $createdAt): self
+    public function setCreatedAt(?\DateTimeImmutable $createdAt): self
     {
         $this->createdAt = $createdAt;
         return $this;
     }
 
-    public function getTitle()
+    public function getTitle(): ?string
     {
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
+        return $this;
     }
 
-    public function getContent()
+    public function getContent(): ?string
     {
         return $this->content;
     }
 
-    public function setContent($content)
+    public function setContent(string $content): self
     {
         $this->content = $content;
+        return $this;
     }
 
-    public function isDone()
+    public function isDone(): bool
     {
         return $this->isDone;
     }
@@ -88,14 +88,13 @@ use Symfony\Component\Validator\Constraints as Assert;
         return $this->user;
     }
 
-    public function setUser(?User $user): static
+    public function setUser(?User $user): self
     {
         $this->user = $user;
-
         return $this;
     }
 
-    public function toggle($flag)
+    public function toggle(bool $flag): void
     {
         $this->isDone = $flag;
     }
