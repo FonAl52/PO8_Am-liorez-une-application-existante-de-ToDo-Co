@@ -15,21 +15,51 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 
+/**
+ * TaskController
+ *
+ * This controller handles task-related actions, including listing, creating, editing, toggling, and deleting tasks.
+ */
 class TaskController extends AbstractController
 {
     private EntityManagerInterface $entityManager;
 
+    /**
+     * Constructor.
+     *
+     * @param EntityManagerInterface $entityManager
+     */
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
     }
+    //end __construct()
 
+    /**
+     * List tasks.
+     *
+     * Handles both GET and POST requests to the '/tasks' route. 
+     *
+     * @param TaskRepository $taskRepository
+     *
+     * @return Response
+     */
     #[Route('/tasks', name: 'task_list', methods: ['GET','POST'])]
     public function listAction(TaskRepository $task)
     {
         return $this->render('task/list.html.twig', ['tasks' => $task->findAll()]);
     }
 
+    /**
+     * Create a new task.
+     *
+     * Handles both GET and POST requests to the '/tasks/create' route. 
+     *
+     * @param Request $request
+     * @param Security $security
+     *
+     * @return Response
+     */
     #[Route('/tasks/create', name: 'task_create', methods: ['GET','POST'])]
     public function createAction(Request $request, Security $security)
     {
@@ -54,6 +84,17 @@ class TaskController extends AbstractController
         return $this->render('task/create.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Edit a task.
+     *
+     * Handles both GET and POST requests to the '/tasks/{id}/edit' route. 
+     * 
+     * @param Task $task
+     * @param Request $request
+     * @param Security $security
+     *
+     * @return Response
+     */
     #[Route('/tasks/{id}/edit', name: 'task_edit', methods: ['GET','POST'])]
     public function editAction(Task $task, Request $request, Security $security)
     {
@@ -80,6 +121,15 @@ class TaskController extends AbstractController
         ]);
     }
 
+    /**
+     * Toggle task completion status.
+     *
+     * Handles both GET and POST requests to the '/tasks/{id}/toggle' route. 
+     *
+     * @param Task $task
+     *
+     * @return Response
+     */
     #[Route('/tasks/{id}/toggle', name: 'task_toggle', methods: ['GET','POST'])]
     public function toggleTaskAction(Task $task)
     {
@@ -91,6 +141,15 @@ class TaskController extends AbstractController
         return $this->redirectToRoute('task_list');
     }
 
+    /**
+     * Delete a task.
+     *
+     * Handles both GET and POST requests to the '/tasks/{id}/delete' route. 
+     * 
+     * @param Task $task
+     *
+     * @return Response
+     */
     #[Route('/tasks/{id}/delete', name: 'task_delete', methods: ['GET','POST'])]
     public function deleteTaskAction(Task $task): Response
     {
