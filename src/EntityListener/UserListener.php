@@ -5,12 +5,19 @@ namespace App\EntityListener;
 use App\Entity\User;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
+
+/**
+ * UserListener
+ *
+ * This listener is responsible for handling user-related events, such as prePersist and preUpdate,
+ * to ensure that user passwords are properly hashed before being persisted to the database.
+ */
 class UserListener
 {
     private UserPasswordHasherInterface $hasher;
 
     /**
-     * Construct
+     * Constructor.
      *
      * @param UserPasswordHasherInterface $hasher
      */
@@ -20,10 +27,12 @@ class UserListener
     }
     //end __construct()
 
-
     /**
      * Prepersist
      *
+     * * This method is called before a User entity is persisted to the database.
+     * It ensures that the user's password is properly hashed.
+     * 
      * @param User $user
      * @return void
      */
@@ -33,7 +42,10 @@ class UserListener
     }
 
     /**
-     * Preupdate
+     * Pre-update event handler.
+     *
+     * This method is called before a User entity is updated in the database.
+     * It ensures that the user's password is properly hashed.
      *
      * @param User $user
      * @return void
@@ -44,7 +56,10 @@ class UserListener
     }
 
     /**
-     * Encode password based on plain password
+     * Encode password based on plain password.
+     *
+     * This method hashes the user's plain password and sets the hashed password on the user entity.
+     * If no plain password is set, the method returns without making any changes.
      *
      * @param User $user
      * @return void

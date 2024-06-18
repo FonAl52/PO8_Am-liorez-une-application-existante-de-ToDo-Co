@@ -11,26 +11,51 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
+
+/**
+ * UserController
+ *
+ * This controller handles user-related actions, including listing, creating, and editing users.
+ */
 class UserController extends AbstractController
 {
+
+    /**
+     * List users.
+     *
+     * Handles both GET and POST requests to the '/users' route.
+     * 
+     * @param UserRepository $userRepository
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return Response
+     */
     #[Route('/users', name: 'user_list', methods: ['GET', 'POST'])]
     public function listAction(
         UserRepository $userRepository,
         AuthorizationCheckerInterface $authorizationChecker
     ): Response {
         if (!$authorizationChecker->isGranted('ROLE_ADMIN')) {
-            // Si l'utilisateur n'a pas le rôle admin, on affiche un message d'erreur
             $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
-            return $this->redirectToRoute('homepage'); // Rediriger vers l'accueil
+            return $this->redirectToRoute('homepage');
         }
 
-        // Si l'utilisateur a le rôle admin, afficher la liste des utilisateurs
         return $this->render('user/list.html.twig', ['users' => $userRepository->findAll()]);
     }
     
+    /**
+     * Create a new user.
+     *
+     * Handles both GET and POST requests to the '/users/create' route.
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param AuthorizationCheckerInterface $authorizationChecker
+     *
+     * @return Response The response object containing the rendered template
+     */
     #[Route('/users/create', name: 'user_create', methods: ['GET','POST'])]
     public function createAction(
         Request $request, 
@@ -38,9 +63,8 @@ class UserController extends AbstractController
         AuthorizationCheckerInterface $authorizationChecker
     ): Response {
         if (!$authorizationChecker->isGranted('ROLE_ADMIN')) {
-            // Si l'utilisateur n'a pas le rôle admin, on affiche un message d'erreur
             $this->addFlash('error', 'Vous n\'avez pas les droits nécessaires pour accéder à cette page.');
-            return $this->redirectToRoute('homepage'); // Rediriger vers l'accueil
+            return $this->redirectToRoute('homepage');
         }
 
         $user = new User();
@@ -69,16 +93,26 @@ class UserController extends AbstractController
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
     }
 
+    /**
+     * Edit a user.
+     *
+     * Handles both GET and POST requests to the '/users/{id}/edit' route.
+     * 
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param AuthorizationCheckerInterface $authChecker
+     *
+     * @return Response
+     */
     #[Route('/users/{id}/edit', name: 'user_edit', methods: ['GET','POST'])]
     public function editAction(
         User $user, 
         Request $request, 
-        EntityManagerInterface $em,  
-        UserPasswordHasherInterface $passwordHasher,
+        EntityManagerInterface $em,
         AuthorizationCheckerInterface $authChecker
     ): Response {
         if (!$authChecker->isGranted('ROLE_ADMIN')) {
-            // Si l'utilisateur n'est pas administrateur, rediriger vers la page d'accueil avec un message d'erreur
             $this->addFlash('error', 'Vous n\'avez pas les permissions nécessaires pour accéder à cette page.');
             return $this->redirectToRoute('homepage');
         }

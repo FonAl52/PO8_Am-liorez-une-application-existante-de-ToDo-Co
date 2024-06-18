@@ -8,8 +8,25 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
+
+/**
+ * SecurityController
+ *
+ * This controller handles user authentication, including login and logout actions.
+ */
 class SecurityController extends AbstractController
 {
+
+    /**
+     * Login action.
+     *
+     * This method handles both POST and GET requests to the login route ('/login').
+     *
+     * @param Request $request
+     * @param AuthenticationUtils $authenticationUtils
+     *
+     * @return Response
+     */
     #[Route('/login', name: 'app_login', methods: ['POST','GET'])]
     public function login(
         Request $request,
@@ -24,6 +41,8 @@ class SecurityController extends AbstractController
     /**
      * Logout
      *
+     * This method handles the logout action.
+     * 
      * @return void
      * 
      * @codeCoverageIgnore
