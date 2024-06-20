@@ -24,6 +24,7 @@ Run `symfony serve` and access http://localhost:8000
 ## Connection you can use with dataFixtures
 
 {
+
     ROLE : "ROLE_ANONYMOUS",
         "username" : "anonymous",
         "email" : "anonymous@example.org",
