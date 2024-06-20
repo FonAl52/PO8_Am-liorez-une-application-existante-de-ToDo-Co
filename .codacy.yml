@@ -1,0 +1,12 @@
+engines:
+  eslint:
+    enabled: true
+    configFile: .eslintrc.json
+    extensions:
+      - .js
+      - .jsx
+
+ignore:
+  - "migrations/*"
+  - "src/Form/UserType.php"
+  - "src/Form/TaskType.php"
