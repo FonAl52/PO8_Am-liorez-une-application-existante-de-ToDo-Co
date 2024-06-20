@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Tests\DataFixtures;
+
+use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\KernelBrowser;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\Bundle\FrameworkBundle\Console\Application;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
+class DataFixtureTestCase extends WebTestCase
+{
+    protected static Application $application;
+    protected KernelBrowser $client;
+    protected ContainerInterface $containerTest;
+    protected EntityManager $entityManager;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        // Make sure the application is initialized
+        self::getApplication();
+
+        // Reload fixtures before each test
+        self::runCommand('doctrine:fixtures:load --no-interaction --env=test --group=Test');
+        
+        $this->client = static::createClient();
+        $this->containerTest = static::getContainer();
+        $this->entityManager = $this->containerTest->get('doctrine.orm.entity_manager');
+    }
+
+    protected static function runCommand(string $command): int
+    {
+        $command = sprintf('%s --quiet', $command);
+
+        return self::getApplication()->run(new StringInput($command));
+    }
+
+    protected static function getApplication(): Application
+    {
+        if (!isset(self::$application)) {
+            $kernel = static::createKernel();
+            self::$application = new Application($kernel);
+            self::$application->setAutoExit(false);
+        }
+
+        return self::$application;
+    }
+
+    protected function tearDown(): void
+    {
+        self::runCommand('doctrine:fixtures:load --no-interaction --env=test --group=test --append');
+
+        parent::tearDown();
+
+        if ($this->entityManager->isOpen()) {
+            $this->entityManager->close();
+        }
+        $this->entityManager = null;
+    }
+}

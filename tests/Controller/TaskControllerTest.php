@@ -71,7 +71,7 @@ class TaskControllerTest extends WebTestCase
     {
         $this->loginAsUser();
 
-        $crawler = $this->client->request('GET', '/tasks');
+        $this->client->request('GET', '/tasks');
         $this->assertSame(200, $this->client->getResponse()->getStatusCode());
     }
 
