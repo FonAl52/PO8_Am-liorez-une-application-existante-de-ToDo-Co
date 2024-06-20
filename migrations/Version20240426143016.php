@@ -17,12 +17,22 @@ final class Version20240426143016 extends AbstractMigration
         return '';
     }
 
+    /**
+     *
+     * @param Schema $schema
+     * @return void
+     */
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE user DROP roles');
     }
 
+    /**
+     *
+     * @param Schema $schema
+     * @return void
+     */
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs

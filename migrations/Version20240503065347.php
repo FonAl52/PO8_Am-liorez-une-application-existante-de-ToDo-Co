@@ -17,6 +17,11 @@ final class Version20240503065347 extends AbstractMigration
         return '';
     }
 
+    /**
+     *
+     * @param Schema $schema
+     * @return void
+     */
     public function up(Schema $schema): void
     {
         $this->addSql('ALTER TABLE task ADD user_id INT DEFAULT NULL');
@@ -26,6 +31,11 @@ final class Version20240503065347 extends AbstractMigration
         $this->addSql('ALTER TABLE user ADD roles JSON NOT NULL');
     }
 
+    /**
+     *
+     * @param Schema $schema
+     * @return void
+     */
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
