@@ -98,6 +98,13 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/edit', name: 'task_edit', methods: ['GET','POST'])]
     public function editAction(Task $task, Request $request, Security $security)
     {
+        $currentUser = $this->getUser();
+
+        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $this->addFlash('error', 'Vous devez être connecté pour supprimer une tâche.');
+            return $this->redirectToRoute('homepage');
+        }
+        
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
@@ -153,10 +160,17 @@ class TaskController extends AbstractController
     #[Route('/tasks/{id}/delete', name: 'task_delete', methods: ['GET','POST'])]
     public function deleteTaskAction(Task $task): Response
     {
+        
+        $currentUser = $this->getUser();
+
+        if (!$this->isGranted('IS_AUTHENTICATED_FULLY')) {
+            $this->addFlash('error', 'Vous devez être connecté pour supprimer une tâche.');
+            return $this->redirectToRoute('homepage');
+        }
+
         $taskCreatorId = $task->getUser()->getId();
         $taskCreator = $this->entityManager->getRepository(User::class)->findOneBy(['id' => $taskCreatorId]);
-        $currentUser = $this->getUser();
-        
+
         if ($this->isGranted('ROLE_ADMIN')) {
             if (in_array('ROLE_ANONYMOUS', $taskCreator->getRoles())) {
                 // Si l'utilisateur a les permissions nécessaires, supprimer la tâche
